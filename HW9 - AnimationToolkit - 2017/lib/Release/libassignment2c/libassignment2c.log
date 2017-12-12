@@ -1,1 +1,4 @@
-﻿
+﻿  aIKController.cpp
+aIKController.cpp(172): warning C4800: 'int': forcing value to bool 'true' or 'false' (performance warning)
+aIKController.cpp(306): warning C4800: 'int': forcing value to bool 'true' or 'false' (performance warning)
+  libassignment2c.vcxproj -> E:\462\hw9-behavioral-animation-nickjang\HW9 - AnimationToolkit - 2017\libsrc\animation\..\..\lib\libassignment2c.lib

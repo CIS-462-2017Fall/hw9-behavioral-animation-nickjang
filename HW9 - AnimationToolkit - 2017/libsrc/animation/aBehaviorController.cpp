@@ -157,13 +157,21 @@ void BehaviorController::control(double deltaT)
 
 		//  force and torque inputs are computed from vd and thetad as follows:
 		//              Velocity P controller : force = mass * Kv * (vd - v)
-		//              Heading PD controller : torque = Inertia * (-Kv * thetaDot -Kp * (thetad - theta))
+		//              Heading PD controller : torque = Inertia * (-Kv * thetaDot +Kp * (thetad - theta))
 		//  where the values of the gains Kv and Kp are different for each controller
 
 		// TODO: insert your code here to compute m_force and m_torque
-
-
-
+		m_vd = m_Vdesired.Length();
+		m_thetad = m_state[1][1] + acos(Dot(m_Vdesired, m_Vel0) / (m_vd * m_Vel0.Length()));
+		//force
+		m_force[0] = 0.0; m_force[1] = 0.0;
+		m_force = gMass * gVelKv * (m_Vdesired - m_Vel0);
+		//torque
+		double inertia = gMass * pow((m_pBehaviorTarget->getLocalTranslation() - getPosition()).Length(), 2.0);
+		double angle = m_thetad - m_state[1][1];
+		ClampAngle(angle);
+		m_torque[0] = 0.0; m_torque[2] = 0.0;
+		m_torque[1] = inertia * (-gOriKv * m_state[3][1] + angle * gOriKp);
 
 
 
@@ -211,11 +219,13 @@ void BehaviorController::computeDynamics(vector<vec3>& state, vector<vec3>& cont
 
 	// Compute the stateDot vector given the values of the current state vector and control input vector
 	// TODO: add your code here
-
-
-
-
-
+	//stateDot[0] = mat3::Rotation3D(vec3(1.0f, 0, 1.0f), (state[1])[1]) * state[2];
+	stateDot[0] = m_pActor->getSkeleton()->getRootNode()->getLocal2Global() * state[2];
+	stateDot[0][1] = 0.0;
+	m_Vel0 = stateDot[0];
+	stateDot[1] = state[3];
+	stateDot[2] = force / gMass;
+	stateDot[3] = torque / gMass;
 }
 
 void BehaviorController::updateState(float deltaT, int integratorType)
@@ -224,7 +234,23 @@ void BehaviorController::updateState(float deltaT, int integratorType)
 	//  this should be similar to what you implemented in the particle system assignment
 
 	// TODO: add your code here
-	
+	if (integratorType) {
+		//d1 = d2 because acceleration is constant, so no need for a d1 and d2
+		m_state[2] = m_state[2] + deltaT * m_stateDot[2];
+		m_state[3] = m_state[3] + deltaT * m_stateDot[3];
+		//position
+		for (int i = 0; i < 1; i++) {
+			vec3 d1 = m_stateDot[i];
+			vec3 d2 = m_stateDot[i] + m_stateDot[i + 2] * deltaT;
+			m_state[i] = m_state[i] + (deltaT / 2.0) * (d1 + d2);
+		}
+	}
+	else {
+		m_state[0] += deltaT * m_stateDot[0];
+		m_state[1] += deltaT * m_stateDot[1];
+		m_state[2] += deltaT * m_stateDot[2];
+		m_state[3] += deltaT * m_stateDot[3];
+	}
 
 
 
@@ -240,8 +266,22 @@ void BehaviorController::updateState(float deltaT, int integratorType)
 
 	//  Perform validation check to make sure all values are within MAX values
 	// TODO: add your code here
-
-
+	if (m_VelB.Length() > BehaviorController::gMaxSpeed) {
+		m_VelB = m_VelB.Normalize() * BehaviorController::gMaxSpeed;
+		m_state[VEL] = m_VelB;
+	}
+	if (m_AVelB.Length() > BehaviorController::gMaxAngularSpeed) {
+		m_AVelB[1] = BehaviorController::gMaxAngularSpeed;
+		m_state[AVEL][1] = BehaviorController::gMaxAngularSpeed;
+	}
+	if (m_force.Length() > BehaviorController::gMaxForce) {
+		m_force[0] = 0.0; m_force[1] = 0.0;
+		m_force[2] = BehaviorController::gMaxForce;
+	}
+	if (m_torque.Length() > BehaviorController::gMaxTorque) {
+		m_torque[0] = 0.0; m_torque[2] = 0.0;
+		m_torque[1] = BehaviorController::gMaxTorque;
+	}
 
 
 

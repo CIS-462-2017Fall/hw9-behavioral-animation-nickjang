@@ -54,7 +54,7 @@ protected:
 protected: 
 	AActor m_commonActor; 
 	//ASkeleton* m_pCommonSkeleton;
-   // BVHController* m_pBVHController;
+    // BVHController* m_pBVHController;
 	//BVHController* m_pCommonBVHController;
 	BehaviorController* m_pBehaviorController;
     std::vector<AActor> m_AgentList;

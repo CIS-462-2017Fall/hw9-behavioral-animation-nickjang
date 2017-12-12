@@ -84,6 +84,24 @@ void BehaviorViewer::initializeGui()
 	TwAddButton(m_TwBehaviorBar, "Reset", onResetCb, this, "");
 
 	//TODO: Add your code here to create additional GUI Variables
+	TwAddVarRW(m_TwBehaviorBar, "Max Force", TW_TYPE_DOUBLE, &BehaviorController::gMaxForce, "");
+	TwAddVarRW(m_TwBehaviorBar, "Max Torque", TW_TYPE_DOUBLE, &BehaviorController::gMaxTorque, "");
+	TwAddVarRW(m_TwBehaviorBar, "K Neighborhood", TW_TYPE_DOUBLE, &BehaviorController::gKNeighborhood, "");
+	TwAddVarRW(m_TwBehaviorBar, "Orientation Kv", TW_TYPE_DOUBLE, &BehaviorController::gOriKv, "");
+	TwAddVarRW(m_TwBehaviorBar, "Orientation Kp", TW_TYPE_DOUBLE, &BehaviorController::gOriKp, "");
+	TwAddVarRW(m_TwBehaviorBar, "Velocity Kv", TW_TYPE_DOUBLE, &BehaviorController::gVelKv, "");
+	TwAddVarRW(m_TwBehaviorBar, "Agent Radius", TW_TYPE_DOUBLE, &BehaviorController::gAgentRadius, "");
+	TwAddVarRW(m_TwBehaviorBar, "Mass", TW_TYPE_DOUBLE, &BehaviorController::gMass, "");
+	TwAddVarRW(m_TwBehaviorBar, "Inertia", TW_TYPE_DOUBLE, &BehaviorController::gInertia, "");
+	TwAddVarRW(m_TwBehaviorBar, "Arrival", TW_TYPE_DOUBLE, &BehaviorController::KArrival, "");
+	TwAddVarRW(m_TwBehaviorBar, "Departure", TW_TYPE_DOUBLE, &BehaviorController::KDeparture, "");
+	TwAddVarRW(m_TwBehaviorBar, "Noise", TW_TYPE_DOUBLE, &BehaviorController::KNoise, "");
+	TwAddVarRW(m_TwBehaviorBar, "Wander", TW_TYPE_DOUBLE, &BehaviorController::KWander, "");
+	TwAddVarRW(m_TwBehaviorBar, "KAvoid", TW_TYPE_DOUBLE, &BehaviorController::KAvoid, "");
+	TwAddVarRW(m_TwBehaviorBar, "TAvoid", TW_TYPE_DOUBLE, &BehaviorController::TAvoid, "");
+	TwAddVarRW(m_TwBehaviorBar, "Separation", TW_TYPE_DOUBLE, &BehaviorController::KSeparation, "");
+	TwAddVarRW(m_TwBehaviorBar, "Alignment", TW_TYPE_DOUBLE, &BehaviorController::KAlignment, "");
+	TwAddVarRW(m_TwBehaviorBar, "Cohesion", TW_TYPE_DOUBLE, &BehaviorController::KCohesion, "");
 }
 
 
